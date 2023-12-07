@@ -130,12 +130,11 @@
     <Text Include="input.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\Downloads\huffman-coding-master\huffman-coding-master\huffman.cpp" />
-    <ClCompile Include="..\..\..\..\Downloads\huffman-coding-master\huffman-coding-master\huffmanCoding.cpp" />
-    <ClCompile Include="..\..\..\..\Downloads\huffman-coding-master\huffman-coding-master\huffmanDecoding.cpp" />
+    <ClInclude Include="huffman.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\Downloads\huffman-coding-master\huffman-coding-master\huffman.h" />
+    <ClCompile Include="huffman.cpp" />
+    <ClCompile Include="huffmanCoding.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

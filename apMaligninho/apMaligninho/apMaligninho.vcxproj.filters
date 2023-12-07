@@ -20,19 +20,16 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\Downloads\huffman-coding-master\huffman-coding-master\huffman.cpp">
-      <Filter>Arquivos de Origem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Downloads\huffman-coding-master\huffman-coding-master\huffmanCoding.cpp">
-      <Filter>Arquivos de Origem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Downloads\huffman-coding-master\huffman-coding-master\huffmanDecoding.cpp">
-      <Filter>Arquivos de Origem</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\Downloads\huffman-coding-master\huffman-coding-master\huffman.h">
+    <ClInclude Include="huffman.h">
       <Filter>Arquivos de Origem</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="huffman.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
+    <ClCompile Include="huffmanCoding.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
