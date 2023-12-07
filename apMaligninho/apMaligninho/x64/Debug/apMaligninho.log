@@ -1,2 +1,6 @@
-﻿  Encoding.cpp
+﻿  huffman.cpp
+C:\Users\u22147\Downloads\huffman-coding-master\huffman-coding-master\huffman.cpp(44,2): warning C4267: 'inicializando': conversão de 'size_t' para 'int', possível perda de dados
+C:\Users\u22147\Downloads\huffman-coding-master\huffman-coding-master\huffman.cpp(158,26): warning C4267: 'inicializando': conversão de 'size_t' para 'int', possível perda de dados
+  huffmanCoding.cpp
+  Gerando Código...
   apMaligninho.vcxproj -> C:\Users\u22147\source\repos\apMaligninho\x64\Debug\apMaligninho.exe

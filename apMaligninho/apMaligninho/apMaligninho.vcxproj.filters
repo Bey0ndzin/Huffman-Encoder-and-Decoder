@@ -15,13 +15,24 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\Desktop\File-Compression-master\File-Compression-master\source\Encoding.cpp">
+    <Text Include="input.txt">
+      <Filter>Arquivos de Origem</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\Downloads\huffman-coding-master\huffman-coding-master\huffman.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Downloads\huffman-coding-master\huffman-coding-master\huffmanCoding.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Downloads\huffman-coding-master\huffman-coding-master\huffmanDecoding.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="input.txt">
+    <ClInclude Include="..\..\..\..\Downloads\huffman-coding-master\huffman-coding-master\huffman.h">
       <Filter>Arquivos de Origem</Filter>
-    </Text>
+    </ClInclude>
   </ItemGroup>
 </Project>
