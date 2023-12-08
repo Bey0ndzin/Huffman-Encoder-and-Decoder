@@ -139,11 +139,16 @@ void compressFile(string inputFile, string outputFile) {
     }
 
     // Escrever os últimos bits que sobraram
-    if (!buffer.empty()) {
-        bitset<8> byte(buffer);
-        outFile.put(byte.to_ulong());
-        buffer.clear();  // Limpar o buffer após escrever o último byte
+    while (buffer.length() % 8 != 0) {
+        buffer += "0";  // Adicionar zeros para preencher até um byte completo
     }
+
+    while (!buffer.empty()) {
+        bitset<8> byte(buffer.substr(0, 8));
+        outFile.put(byte.to_ulong());
+        buffer = buffer.substr(8);
+    }
+
 
     inFile.close();
     outFile.close();
@@ -175,6 +180,7 @@ void decompressFile(string compressedFile, string decompressedFile) {
     if (!outFile.is_open()) {
         cerr << "Erro ao criar o arquivo descomprimido." << endl;
         freeHuffmanTree(root);  // Liberar memória antes de sair
+        inFile.close();
         return;
     }
 
@@ -197,6 +203,11 @@ void decompressFile(string compressedFile, string decompressedFile) {
                 currentNode = root;  // Reiniciar a busca na árvore
             }
         }
+    }
+
+    // Verificar se chegou ao final do arquivo
+    if (inFile.eof()) {
+        // Realizar qualquer operação adicional necessária ao final do arquivo
     }
 
     // Fechar os arquivos e liberar a memória
