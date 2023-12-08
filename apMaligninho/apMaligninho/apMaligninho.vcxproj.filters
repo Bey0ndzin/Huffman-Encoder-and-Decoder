@@ -20,14 +20,6 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="huffman.h">
-      <Filter>Arquivos de Origem</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="huffman.cpp">
-      <Filter>Arquivos de Origem</Filter>
-    </ClCompile>
     <ClCompile Include="huffmanCoding.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>

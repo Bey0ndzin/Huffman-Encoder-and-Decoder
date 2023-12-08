@@ -130,10 +130,6 @@
     <Text Include="input.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="huffman.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="huffman.cpp" />
     <ClCompile Include="huffmanCoding.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
