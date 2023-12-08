@@ -79,22 +79,23 @@ void writeHuffmanTree(ofstream& outFile, HuffmanNode* root) {
     }
 }
 // Função para ler a árvore Huffman de um arquivo comprimido
-void readHuffmanTree(ifstream& inFile, HuffmanNode* root) {
+HuffmanNode* readHuffmanTree(ifstream& inFile) {
     char bit;
     inFile.get(bit);
 
     if (bit == '1') {
         char data;
         inFile.get(data);
-        root->data = data;
+        return new HuffmanNode(data, 0);
     }
     else {
-        root->left = new HuffmanNode('$', 0);
-        root->right = new HuffmanNode('$', 0);
-        readHuffmanTree(inFile, root->left);
-        readHuffmanTree(inFile, root->right);
+        HuffmanNode* internalNode = new HuffmanNode('$', 0);
+        internalNode->left = readHuffmanTree(inFile);
+        internalNode->right = readHuffmanTree(inFile);
+        return internalNode;
     }
 }
+
 
 
 // Função para comprimir um arquivo usando a árvore Huffman
@@ -141,42 +142,46 @@ void compressFile(string inputFile, string outputFile) {
     if (!buffer.empty()) {
         bitset<8> byte(buffer);
         outFile.put(byte.to_ulong());
+        buffer.clear();  // Limpar o buffer após escrever o último byte
     }
 
     inFile.close();
     outFile.close();
 }
 
-// Função para descomprimir um arquivo comprimido
+void freeHuffmanTree(HuffmanNode* node) {
+    if (node == nullptr) {
+        return;
+    }
+    freeHuffmanTree(node->left);
+    freeHuffmanTree(node->right);
+    delete node;
+}
+
 // Função para descomprimir um arquivo comprimido
 void decompressFile(string compressedFile, string decompressedFile) {
-    // Ler a árvore Huffman do arquivo comprimido
+    // Abrir o arquivo comprimido
     ifstream inFile(compressedFile, ios::binary);
-    HuffmanNode* root = nullptr;
-
-    char bit;
-    inFile.get(bit);
-    while (bit == '0' || bit == '1') {
-        if (bit == '1') {
-            char data;
-            inFile.get(data);
-            root = new HuffmanNode(data, 0);
-        }
-        else {
-            root = new HuffmanNode('$', 0);
-            root->left = new HuffmanNode('$', 0);
-            root->right = new HuffmanNode('$', 0);
-            readHuffmanTree(inFile, root->left);
-            readHuffmanTree(inFile, root->right);
-        }
-        inFile.get(bit);
+    if (!inFile.is_open()) {
+        cerr << "Erro ao abrir o arquivo comprimido." << endl;
+        return;
     }
 
-    // Descomprimir o restante do arquivo
+    // Ler a árvore Huffman do arquivo comprimido
+    HuffmanNode* root = readHuffmanTree(inFile);
+
+    // Abrir o arquivo de saída
     ofstream outFile(decompressedFile, ios::binary);
+    if (!outFile.is_open()) {
+        cerr << "Erro ao criar o arquivo descomprimido." << endl;
+        freeHuffmanTree(root);  // Liberar memória antes de sair
+        return;
+    }
+
     HuffmanNode* currentNode = root;
 
     // Processar cada bit do arquivo comprimido
+    char bit;
     while (inFile.get(bit)) {
         for (int i = 7; i >= 0; --i) {
             if (bit & (1 << i)) {
@@ -186,16 +191,18 @@ void decompressFile(string compressedFile, string decompressedFile) {
                 currentNode = currentNode->left;
             }
 
-            // Se atingir uma folha, escrever o caractere no arquivo de saída
             if (currentNode->left == nullptr && currentNode->right == nullptr) {
+                // Chegou a uma folha, escrever o caractere no arquivo
                 outFile.put(currentNode->data);
-                currentNode = root;
+                currentNode = root;  // Reiniciar a busca na árvore
             }
         }
     }
 
+    // Fechar os arquivos e liberar a memória
     inFile.close();
     outFile.close();
+    freeHuffmanTree(root);
 }
 
 

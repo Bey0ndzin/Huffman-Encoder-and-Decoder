@@ -1,10 +1,10 @@
 ﻿  huffmanCoding.cpp
-C:\Users\Pichau\Documents\GitHub\PROJETO-MALIGNO-DAS-PROFUNDEZAS\apMaligninho\apMaligninho\huffmanCoding.cpp(135,38): warning C4244: 'argumento': conversão de 'unsigned long' para '_Elem', possível perda de dados
+C:\Users\Pichau\Documents\GitHub\PROJETO-MALIGNO-DAS-PROFUNDEZAS\apMaligninho\apMaligninho\huffmanCoding.cpp(136,38): warning C4244: 'argumento': conversão de 'unsigned long' para '_Elem', possível perda de dados
           with
           [
               _Elem=char
           ]
-C:\Users\Pichau\Documents\GitHub\PROJETO-MALIGNO-DAS-PROFUNDEZAS\apMaligninho\apMaligninho\huffmanCoding.cpp(143,34): warning C4244: 'argumento': conversão de 'unsigned long' para '_Elem', possível perda de dados
+C:\Users\Pichau\Documents\GitHub\PROJETO-MALIGNO-DAS-PROFUNDEZAS\apMaligninho\apMaligninho\huffmanCoding.cpp(144,34): warning C4244: 'argumento': conversão de 'unsigned long' para '_Elem', possível perda de dados
           with
           [
               _Elem=char
