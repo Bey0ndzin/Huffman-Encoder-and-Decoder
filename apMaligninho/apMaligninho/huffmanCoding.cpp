@@ -7,39 +7,39 @@
 
 using namespace std;
 
-// Estrutura para representar um nó na árvore Huffman
-struct HuffmanNode {
+// Struct feita para servir como um nó de huffman na árvore
+struct No {
     unsigned char data;
-    int frequency;
-    HuffmanNode* left;
-    HuffmanNode* right;
+    int freq;
+    No* left;
+    No* right;
 
-    HuffmanNode(unsigned char data, int frequency) : data(data), frequency(frequency), left(nullptr), right(nullptr) {}
+    No(unsigned char data, int freq) : data(data), freq(freq), left(nullptr), right(nullptr) {}
 };
 
-// Comparador para a fila de prioridade (usada para construir a árvore Huffman)
-struct CompareNodes {
-    bool operator()(HuffmanNode* lhs, HuffmanNode* rhs) const {
-        return lhs->frequency > rhs->frequency;
+// Struct de Comparador para a fila de prioridade (usada para construir a árvore Huffman)
+struct ComparaNo {
+    bool operator()(No* lhs, No* rhs) const {
+        return lhs->freq > rhs->freq;
     }
 };
 
-// Tabela para mapear caracteres para códigos binários
+// Tabela para mapear caracteres convertendo eles em códigos binários
 map<unsigned char, string> huffmanCodes;
 
 // Função para construir a árvore Huffman
-HuffmanNode* buildHuffmanTree(map<unsigned char, int>& frequencies) {
-    priority_queue<HuffmanNode*, vector<HuffmanNode*>, CompareNodes> pq;
+No* construirArvore(map<unsigned char, int>& frequencies) {
+    priority_queue<No*, vector<No*>, ComparaNo> pq;
 
     for (auto& entry : frequencies) {
-        pq.push(new HuffmanNode(entry.first, entry.second));
+        pq.push(new No(entry.first, entry.second));
     }
 
     while (pq.size() > 1) {
-        HuffmanNode* left = pq.top(); pq.pop();
-        HuffmanNode* right = pq.top(); pq.pop();
+        No* left = pq.top(); pq.pop();
+        No* right = pq.top(); pq.pop();
 
-        HuffmanNode* newNode = new HuffmanNode(0, left->frequency + right->frequency);
+        No* newNode = new No(0, left->freq + right->freq);
         newNode->left = left;
         newNode->right = right;
 
@@ -50,7 +50,7 @@ HuffmanNode* buildHuffmanTree(map<unsigned char, int>& frequencies) {
 }
 
 // Função para gerar códigos Huffman recursivamente
-void generateHuffmanCodes(HuffmanNode* root, string code) {
+void generateHuffmanCodes(No* root, string code) {
     if (root == nullptr) {
         return;
     }
@@ -64,7 +64,7 @@ void generateHuffmanCodes(HuffmanNode* root, string code) {
 }
 
 // Função para escrever a árvore Huffman em um arquivo
-void writeHuffmanTree(ofstream& outFile, HuffmanNode* root) {
+void writeHuffmanTree(ofstream& outFile, No* root) {
     if (root == nullptr) {
         return;
     }
@@ -81,24 +81,24 @@ void writeHuffmanTree(ofstream& outFile, HuffmanNode* root) {
 }
 
 // Função para ler a árvore Huffman de um arquivo comprimido
-HuffmanNode* readHuffmanTree(ifstream& inFile) {
+No* readHuffmanTree(ifstream& inFile) {
     char bit;
     inFile.get(bit);
 
     if (bit == '1') {
         char data;
         inFile.get(data);
-        return new HuffmanNode(data, 0);
+        return new No(data, 0);
     }
     else {
-        HuffmanNode* internalNode = new HuffmanNode(0, 0);
+        No* internalNode = new No(0, 0);
         internalNode->left = readHuffmanTree(inFile);
         internalNode->right = readHuffmanTree(inFile);
         return internalNode;
     }
 }
 
-void freeHuffmanTree(HuffmanNode* node) {
+void freeHuffmanTree(No* node) {
     if (node == nullptr) {
         return;
     }
@@ -120,7 +120,7 @@ void compressFile(string inputFile, string outputFile) {
     inFile.close();
 
     // Construir a árvore Huffman
-    HuffmanNode* root = buildHuffmanTree(frequencies);
+    No* root = construirArvore(frequencies);
 
     // Gerar códigos Huffman
     generateHuffmanCodes(root, "");
@@ -174,7 +174,7 @@ void decompressFile(string compressedFile, string decompressedFile) {
     }
 
     // Ler a árvore Huffman do arquivo comprimido
-    HuffmanNode* root = readHuffmanTree(inFile);
+    No* root = readHuffmanTree(inFile);
 
     // Abrir o arquivo de saída
     ofstream outFile(decompressedFile, ios::binary);
@@ -185,7 +185,7 @@ void decompressFile(string compressedFile, string decompressedFile) {
         return;
     }
 
-    HuffmanNode* currentNode = root;
+    No* currentNode = root;
 
     // Processar cada byte do arquivo comprimido
     unsigned char byte;
