@@ -218,15 +218,55 @@ void decompressFile(string compressedFile, string decompressedFile) {
 }
 
 int main() {
-    string inputFile = "testes/Bloxstrap.exe";
-    string compressedFile = "testes/compressed4.pcb";
-    string decompressedFile = "testes/decompressed4.exe";
+    char resp = ' ';
+    string nomeSemExtensao, inputName, inputDir;
+    string compressedFile;
+    string decompressedFile;
+    string extOrig;
+    string::size_type p;
+    do {
+        cout << "1) Comprimir arquivo \n";
+        cout << "2) Descomprimir arquivo \n";
+        cout << "3) sair \n";
+        cin >> resp;
+        switch (resp) {
+        case '1':
+            cout << "Digite o endereco do arquivo\nEx: C:/Users/Pichau/Documents/GitHub/\n";
+            cin >> inputDir;
+            cout << "Digite o nome do arquivo\nEx: input.txt\n";
+            cin >> inputName;
 
-    // Comprimir o arquivo
-    compressFile(inputFile, compressedFile);
+            p = inputName.find_last_of('.');
+            nomeSemExtensao = inputName.substr(0, p);
+            compressedFile = inputDir + "/" + nomeSemExtensao + ".pcb";
 
-    // Descomprimir o arquivo comprimido
-    decompressFile(compressedFile, decompressedFile);
+            compressFile((inputDir + "/" + inputName), compressedFile);
+            break;
+        case '2':
+            cout << "Digite o endereco do arquivo\nEx: C:/Users/Pichau/Documents/GitHub/\n";
+            cin >> inputDir;
+            cout << "Digite o nome do arquivo a ser descomprimido\nEx: input\n";
+            cin >> inputName;
+            cout << "Digite a extensao original do arquivo\nEx: txt\n";
+            cin >> extOrig;
+
+            compressedFile = inputDir + "/" + inputName + ".pcb";
+
+            p = inputName.find_last_of('.');
+            nomeSemExtensao = inputName.substr(0, p);
+
+            decompressedFile = inputDir + "/" + "decompressed_" + nomeSemExtensao + "." + extOrig;
+
+            decompressFile(compressedFile, decompressedFile);
+            break;
+        case '3':
+            cout << "Obrigado por utilizar o programa";
+            break;
+        default:
+            cout << "Digite um numero válido!\n";
+            break;
+        }
+    } while (resp != '3');
 
     return 0;
 }
