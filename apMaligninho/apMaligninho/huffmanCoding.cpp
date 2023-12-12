@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <bitset>
+#include <sstream>
 
 using namespace std;
 
@@ -11,16 +12,16 @@ using namespace std;
 struct No {
     unsigned char data;
     int freq;
-    No* left;
-    No* right;
+    No* esq;
+    No* dir;
 
-    No(unsigned char data, int freq) : data(data), freq(freq), left(nullptr), right(nullptr) {}
+    No(unsigned char data, int freq) : data(data), freq(freq), esq(nullptr), dir(nullptr) {}
 };
 
 // Struct de Comparador para a fila de prioridade (usada para construir a árvore Huffman)
 struct ComparaNo {
-    bool operator()(No* lhs, No* rhs) const {
-        return lhs->freq > rhs->freq;
+    bool operator()(No* noEsquerdo, No* noDireito) const {
+        return noEsquerdo->freq > noDireito->freq;
     }
 };
 
@@ -45,13 +46,13 @@ No* construirArvore(map<unsigned char, int>& frequencias) {
 
     while (pq.size() > 1) {
         // Pega os 2 primeiros nós da fila
-        No* left = pq.top(); pq.pop();
-        No* right = pq.top(); pq.pop();
+        No* esq = pq.top(); pq.pop();
+        No* dir = pq.top(); pq.pop();
 
         // Cria um novo nó sem informação em bytes e com frequência igual a soma das 2 frequências anteriores
-        No* newNode = new No(0, left->freq + right->freq);
-        newNode->left = left;
-        newNode->right = right;
+        No* newNode = new No(0, esq->freq + dir->freq);
+        newNode->esq = esq;
+        newNode->dir = dir;
 
         // "Posta" esse nó na fila
         pq.push(newNode);
@@ -70,35 +71,43 @@ void gerarCodigos(No* raiz, string code) {
         return;
     }
 
-    if (raiz->left == nullptr && raiz->right == nullptr) {
+    if (raiz->esq == nullptr && raiz->dir == nullptr) {
         huffmanCodes[raiz->data] = code;
     }
 
-    gerarCodigos(raiz->left, code + "0");
-    gerarCodigos(raiz->right, code + "1");
+    gerarCodigos(raiz->esq, code + "0");
+    gerarCodigos(raiz->dir, code + "1");
 }
 
 // Função para escrever a árvore Huffman em um arquivo
-void escreveArvore(ofstream& outFile, No* raiz) {
+void escreveArvore(ofstream& outFile, No* raiz, const string& extOrig) {
     if (raiz == nullptr) {
         return;
     }
 
+    // Escrever a extensão original no cabeçalho
+    outFile << extOrig;
+
     // Caso seja uma folha ele adiciona um '1' e o byte lido
-    if (raiz->left == nullptr && raiz->right == nullptr) {
+    if (raiz->esq == nullptr && raiz->dir == nullptr) {
         outFile.put('1');
         outFile.put(raiz->data);
     }
     // Se não for uma folha coloca um '0' e passa para a próxima
     else {
         outFile.put('0');
-        escreveArvore(outFile, raiz->left);
-        escreveArvore(outFile, raiz->right);
+        escreveArvore(outFile, raiz->esq, extOrig);
+        escreveArvore(outFile, raiz->dir, extOrig);
     }
 }
 
 // Função para ler a árvore Huffman de um arquivo comprimido
-No* lerArvore(ifstream& inFile) {
+No* lerArvore(ifstream& inFile, string& extOrig) {
+    // Lê a extensão original do cabeçalho
+    char extBuffer[3];
+    inFile.read(extBuffer, 3);
+    extOrig = string(extBuffer, 3);
+
     char bit;
     inFile.get(bit);
     // Pega 1 único char do arquivo
@@ -113,8 +122,8 @@ No* lerArvore(ifstream& inFile) {
     else {
         // Se for um '0' ele cria um novo nó sem dado
         No* internalNode = new No(0, 0);
-        internalNode->left = lerArvore(inFile);
-        internalNode->right = lerArvore(inFile);
+        internalNode->esq = lerArvore(inFile, extOrig);
+        internalNode->dir = lerArvore(inFile, extOrig);
         return internalNode;
     }
 }
@@ -123,13 +132,13 @@ void liberarArvore(No* node) {
     if (node == nullptr) {
         return;
     }
-    liberarArvore(node->left);
-    liberarArvore(node->right);
+    liberarArvore(node->esq);
+    liberarArvore(node->dir);
     delete node;
 }
 
 // Função para comprimir um arquivo usando a árvore Huffman
-void compressFile(string inputFile, string outputFile) {
+void comprimir(string inputFile, string outputFile) {
     // Ler o arquivo de entrada e contar as frequências dos bytes
     ifstream inFile(inputFile, ios::binary);
     map<unsigned char, int> frequencies;
@@ -147,9 +156,12 @@ void compressFile(string inputFile, string outputFile) {
     // Gera os códigos para cada byte
     gerarCodigos(root, "");
 
+    // Obtendo a extensão original do arquivo
+    string extOrig = inputFile.substr(inputFile.find_last_of('.') + 1);
+
     // Escreve a árvore Huffman no arquivo de saída
     ofstream outFile(outputFile, ios::binary);
-    escreveArvore(outFile, root);
+    escreveArvore(outFile, root, extOrig);
     outFile.close();
 
     // Abrir novamente o arquivo de entrada para compressão real
@@ -190,7 +202,7 @@ void compressFile(string inputFile, string outputFile) {
 }
 
 // Função para descomprimir um arquivo comprimido
-void decompressFile(string compressedFile, string decompressedFile) {
+void descomprimir(string compressedFile, string decompressedFile) {
     // Abrir o arquivo comprimido
     ifstream inFile(compressedFile, ios::binary);
     if (!inFile.is_open()) {
@@ -199,8 +211,10 @@ void decompressFile(string compressedFile, string decompressedFile) {
     }
 
     // Ler a árvore Huffman do arquivo comprimido
-    No* root = lerArvore(inFile);
+    string extOrig("");
+    No* root = lerArvore(inFile, extOrig);
 
+    decompressedFile += "."+extOrig;
     // Abrir o arquivo de saída
     ofstream outFile(decompressedFile, ios::binary);
     if (!outFile.is_open()) {
@@ -217,13 +231,13 @@ void decompressFile(string compressedFile, string decompressedFile) {
     while (inFile.read(reinterpret_cast<char*>(&byte), sizeof(byte))) {
         for (int i = 7; i >= 0; --i) {
             if (byte & (1 << i)) {
-                currentNode = currentNode->right;
+                currentNode = currentNode->dir;
             }
             else {
-                currentNode = currentNode->left;
+                currentNode = currentNode->esq;
             }
 
-            if (currentNode->left == nullptr && currentNode->right == nullptr) {
+            if (currentNode->esq == nullptr && currentNode->dir == nullptr) {
                 // Chegou a uma folha, escrever o byte no arquivo
                 outFile.put(currentNode->data);
                 currentNode = root;  // Reiniciar a busca na árvore
@@ -247,7 +261,6 @@ int main() {
     string nomeSemExtensao, inputName, inputDir;
     string compressedFile;
     string decompressedFile;
-    string extOrig;
     string::size_type p;
     do {
         cout << "1) Comprimir arquivo \n";
@@ -265,24 +278,22 @@ int main() {
             nomeSemExtensao = inputName.substr(0, p);
             compressedFile = inputDir + "/" + nomeSemExtensao + ".pcb";
 
-            compressFile((inputDir + "/" + inputName), compressedFile);
+            comprimir((inputDir + "/" + inputName), compressedFile);
             break;
         case '2':
             cout << "Digite o endereco do arquivo\nEx: C:/Users/Pichau/Documents/GitHub/\n";
             cin >> inputDir;
             cout << "Digite o nome do arquivo a ser descomprimido\nEx: input\n";
             cin >> inputName;
-            cout << "Digite a extensao original do arquivo\nEx: txt\n";
-            cin >> extOrig;
 
             compressedFile = inputDir + "/" + inputName + ".pcb";
 
             p = inputName.find_last_of('.');
             nomeSemExtensao = inputName.substr(0, p);
 
-            decompressedFile = inputDir + "/" + "decompressed_" + nomeSemExtensao + "." + extOrig;
+            decompressedFile = inputDir + "/" + "decompressed_" + nomeSemExtensao;
 
-            decompressFile(compressedFile, decompressedFile);
+            descomprimir(compressedFile, decompressedFile);
             break;
         case '3':
             cout << "Obrigado por utilizar o programa";

@@ -1,0 +1,7 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\.pcb]
+@="pcbfile"
+
+[HKEY_CLASSES_ROOT\pcbfile\DefaultIcon]
+@="C:\Users\Pichau\Downloads\pao_frances.ico"

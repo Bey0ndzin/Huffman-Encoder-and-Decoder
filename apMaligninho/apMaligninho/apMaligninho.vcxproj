@@ -132,6 +132,15 @@
   <ItemGroup>
     <ClCompile Include="huffmanCoding.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\..\Downloads\pao_frances.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="RegScript.rgs" />
+    <None Include="testes\input.pcb">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

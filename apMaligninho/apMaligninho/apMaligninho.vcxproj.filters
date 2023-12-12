@@ -24,4 +24,17 @@
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="testes\input.pcb">
+      <Filter>Arquivos de Origem</Filter>
+    </None>
+    <None Include="RegScript.rgs">
+      <Filter>Arquivos de Origem</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\..\Downloads\pao_frances.ico">
+      <Filter>Arquivos de Recurso</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
