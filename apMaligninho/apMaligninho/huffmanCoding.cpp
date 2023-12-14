@@ -113,9 +113,7 @@ void descomprimir(string compressedFile, string decompressedFile) {
     }
 
     // Verificar se chegou ao final do arquivo
-    if (inFile.eof()) {
-        // Realizar qualquer operação adicional necessária ao final do arquivo
-    }
+    if (inFile.eof()) {}
 
     // Fechar os arquivos e liberar a memória
     inFile.close();

@@ -58,6 +58,7 @@ void Arvore::escreveArvore(ofstream& outFile, No* raiz, const string& extOrig) {
     }
 
     // Escrever a extensão original no cabeçalho
+    outFile << extOrig.length();
     outFile << extOrig;
 
     // Caso seja uma folha ele adiciona um '1' e o byte lido
@@ -75,10 +76,16 @@ void Arvore::escreveArvore(ofstream& outFile, No* raiz, const string& extOrig) {
 
 // Função para ler a árvore Huffman de um arquivo comprimido
 No* Arvore::lerArvore(ifstream& inFile, string& extOrig) {
-    // Lê a extensão original do cabeçalho
-    char extBuffer[3];
-    inFile.read(extBuffer, 3);
-    extOrig = string(extBuffer, 3);
+    // Lê o tamanho da extensão original do cabeçalho
+    char lenBuffer[1];
+    inFile.read(lenBuffer, 1);
+    extOrig = string(lenBuffer, 1);
+
+    // Lê a extensão original do cabeçalho]
+    string tam = string(lenBuffer, 1);
+    char* extBuffer = new char[stoi(tam)];
+    inFile.read(extBuffer, stoi(tam));
+    extOrig = string(extBuffer, stoi(tam));
 
     char bit;
     inFile.get(bit);
